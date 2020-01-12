@@ -281,7 +281,7 @@ class App extends React.Component {
     return (
       <div id="drum-machine">
       <PadBank
-      power={power.this.state.power}
+      power={this.state.power}
       updateDisplay={this.displayClipName}
       clipVolume={this.state.sliverVal}
       />

@@ -110,11 +110,12 @@ const inactiveStyle = {
 }
 class PadBank extends React.Component {
   render() {
-    let PadBank;
+    let padBank;
     this.props.power ? 
       padBank = this.props.currentPadBank.map((drumObj, i, padBankArr) => {
         return (
-          <DrumPad clipId={padBankArr[i].id}
+          <DrumPad
+              clipId={padBankArr[i].id}
           clip={padBankArr[i].url}
           keyTrigger={padBankArr[i].keyTrigger}
           keyCode={padBankArr[i].keyCode}
@@ -134,7 +135,7 @@ class PadBank extends React.Component {
         )
       });
     return(
-      <div className="pad-bank">{padbank}</div>
+      <div className="pad-bank">{padBank}</div>
 
 
     );
@@ -149,7 +150,7 @@ class DrumPad extends React.Component {
     }
     this.playSound = this.playSound.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.activePad = this.activePad.bind(this);
+    this.activatePad = this.activatePad.bind(this);
   }
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -162,7 +163,7 @@ class DrumPad extends React.Component {
       this.playSound();
     }
   }
-  activePad() {
+  activatePad() {
     if (this.props.power) {
       this.state.padStyle.backgroundColor === 'orange' ?
       this.setState({
@@ -200,7 +201,7 @@ class DrumPad extends React.Component {
         onClick={this.playSound}
         className="drum-pad"
         style={this.state.padStyle} >
-        <audio className='clip' id={this.props.keyTrigger} src={this.props.clip}></audio>
+        <audio className='clip' id={this.props.keyTrigger} src={this.props.clip}/>
         {this.props.keyTrigger}
       </div>
     )
@@ -213,22 +214,28 @@ class App extends React.Component {
     this.state = {
       power: true,
       display: String.fromCharCode(160),
-      sliverVal: 0.3,
+      sliderVal: 0.3,
       currentPadBank: bankOne,
       currentPadBankId: 'Heater kit'
     }
+    this.displayClipName = this.displayClipName.bind(this);
+    this.selectBank = this.selectBank.bind(this);
+    this.adjustVolume = this.adjustVolume.bind(this);
+    this.clearDisplay = this.clearDisplay.bind(this);
+
   }
   selectBank() {
     if (this.state.power) {
-      this.state.currentPadBank === 'Heater kit'?
+      this.state.currentPadBankId === 'Heater kit'?
       this.setState({
         currentPadBank: bankTwo,
         display: 'Smooth Piano kit',
+        currentPadBankId: 'Smooth Piano Kit',
       }) :
       this.setState({
         currentPadBank: bankOne,
         display: 'Heater Kit',
-        currentPadBank: 'Heater Kit',
+        currentPadBankId: 'Heater Kit',
       });
     }
   }
@@ -271,7 +278,7 @@ class App extends React.Component {
     }; {
       const clips = [].slice.call(document.getElementsByClassName('clip'));
       clips.forEach(sound => {
-        sound.volume= this.state.sliverVal
+        sound.volume= this.state.sliderVal
       });
     }
 
@@ -279,11 +286,12 @@ class App extends React.Component {
 
 
     return (
-      <div id="drum-machine">
+      <div id="drum-machine" className="inner-container">
       <PadBank
       power={this.state.power}
       updateDisplay={this.displayClipName}
-      clipVolume={this.state.sliverVal}
+      clipVolume={this.state.sliderVal}
+      currentPadBank={this.state.currentPadBank}
       />
       <div className="controls-container">
         <div className="control">
